@@ -97,7 +97,9 @@ void PatchT4_PreLoad()
 	Memory::VP::Patch<uint32_t>((0x005E3CD1 + 6), 15728640);
 
 	// Remove duplicate calls in serverthread
-	Memory::VP::Nop(0x00636686, 0x2D);
+	// Can be turned off in the ini: with it applied, loading a map hangs on a black screen under WINE/Proton
+	if (ini.ReadInteger("Fixes", "RemoveDuplicateServerThreadCalls", 1) != 0)
+		Memory::VP::Nop(0x00636686, 0x2D);
 
 }
 
