@@ -13,10 +13,16 @@ jobs:
         with:
           fetch-depth: 0 # deps/gitrev.bat counts commits for the build number
       - uses: microsoft/setup-msbuild@v2
+      - name: Generate buildnumber.h
+        shell: cmd
+        working-directory: deps
+        run: gitrev.bat
+      # Upstream's Release configuration is stale (no C++ standard, include or lib settings);
+      # Debug is the configuration that is kept buildable.
       - name: Build
-        run: msbuild t4m\t4m.sln /m /p:Configuration=Release /p:Platform=Win32
+        run: msbuild t4m\t4m.sln /m /p:Configuration=Debug /p:Platform=Win32
       - uses: actions/upload-artifact@v4
         with:
           name: d3d9
-          path: t4m/Release/d3d9.dll
+          path: t4m/Debug/d3d9.dll
           if-no-files-found: error
