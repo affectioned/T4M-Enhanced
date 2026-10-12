@@ -1,0 +1,22 @@
+name: build
+
+on:
+  push:
+    branches: [build-ci]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # deps/gitrev.bat counts commits for the build number
+      - uses: microsoft/setup-msbuild@v2
+      - name: Build
+        run: msbuild t4m\t4m.sln /m /p:Configuration=Release /p:Platform=Win32
+      - uses: actions/upload-artifact@v4
+        with:
+          name: d3d9
+          path: t4m/Release/d3d9.dll
+          if-no-files-found: error
